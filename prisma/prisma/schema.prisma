@@ -1,0 +1,78 @@
+`prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  language  String   @default("en")
+
+  deals     Deal[]
+  comments  Comment[]
+  votes     Vote[]
+}
+
+model Deal {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  price       Float
+  oldPrice    Float?
+  url         String
+  store       String?
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime?
+  status      String    @default("active")
+
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+
+  comments    Comment[]
+  votes       Vote[]
+  reports     Report[]
+}
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  value     Int
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  deal      Deal     @relation(fields: [dealId], references: [id])
+  dealId    Int
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  deal      Deal     @relation(fields: [dealId], references: [id])
+  dealId    Int
+}
+
+model Report {
+  id        Int      @id @default(autoincrement())
+  reason    String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  deal      Deal     @relation(fields: [dealId], references: [id])
+  dealId    Int
+}
+`
