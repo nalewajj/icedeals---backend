@@ -15,3 +15,7 @@ app.get("/", (req, res) => {
 });
 
 app.listen(4000, () => console.log("Backend running on port 4000"));
+`js
+import voteRoutes from "./routes/votes.js";
+app.use("/votes", voteRoutes);
+`
